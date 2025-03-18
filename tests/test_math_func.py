@@ -1,4 +1,4 @@
-from src.math_functions import add, sub, mult, div
+from src.math_func import add, sub, mult, div
 from pytest import approx
 
 
