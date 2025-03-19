@@ -60,14 +60,20 @@ jobs:
 
       - name: Test with pytest - Run tests with coverage
         run: |
-          pytest --cov=./
+          pytest --cov=./ --cov-report=xml:./coverage.xml --cov-report=term
+          echo "Checking for coverage file:"
+          ls -la
+          find . -name "coverage.xml"
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: coverage.xml
-          retention-days: 7 --cov-report=xml
+          name: test-coverage-report
+          path: |
+            ./coverage.xml
+            ./*.xml
+          if-no-files-found: warn
+          retention-days: 7
 
       # - name: Test with pytest
       #   run: |
