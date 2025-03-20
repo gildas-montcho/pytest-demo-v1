@@ -60,24 +60,34 @@ jobs:
 
       - name: Test with pytest - Run tests with coverage
         run: |
-          pytest --cov=./ --cov-report=xml:./coverage.xml --cov-report=term
-          echo "Checking for coverage file:"
+          # Generate both XML and HTML coverage reports
+          pytest --cov=./ --cov-report=xml:./coverage.xml --cov-report=html:./htmlcov --cov-report=term
+          echo "Checking for coverage files:"
           ls -la
+          echo "XML coverage file:"
           find . -name "coverage.xml"
+          echo "HTML coverage directory:"
+          find . -name "htmlcov" -type d
+          echo "Contents of htmlcov directory (if it exists):"
+          if [ -d "./htmlcov" ]; then
+            ls -la ./htmlcov
+          fi
 
-      - name: Upload coverage report
+      - name: Upload XML coverage report
         uses: actions/upload-artifact@v4
         with:
-          name: test-coverage-report
-          path: |
-            ./coverage.xml
-            ./*.xml
+          name: coverage-xml
+          path: ./coverage.xml
           if-no-files-found: warn
           retention-days: 7
 
-      # - name: Test with pytest
-      #   run: |
-      #     pytest
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: ./htmlcov/
+          if-no-files-found: warn
+          retention-days: 7
 
   deploy:
     runs-on: ubuntu-latest
